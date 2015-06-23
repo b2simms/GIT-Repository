@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="239dp"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textColor="#000000"
+        android:id="@+id/text_name"
+        android:layout_gravity="left" />
+
+    <TextView
+        android:layout_width="239dp"
+        android:layout_height="wrap_content"
+        android:text="Subject:"
+        android:textColor="#000000"
+        android:id="@+id/text_subject"
+        android:layout_gravity="left" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:ems="10"
+        android:id="@+id/subject" />
+
+    <TextView
+        android:layout_width="232dp"
+        android:layout_height="wrap_content"
+        android:text="Content:"
+        android:textColor="#000000"
+        android:id="@+id/text_content" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:ems="10"
+        android:id="@+id/content" />
+
+    <Button
+        android:id="@+id/btnPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/button_blue_gb"
+        style="@style/ButtonText"
+        android:text="Post" />
+
+
+</LinearLayout>
