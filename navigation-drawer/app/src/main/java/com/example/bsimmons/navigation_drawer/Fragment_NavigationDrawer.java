@@ -1,18 +1,18 @@
 package com.example.bsimmons.navigation_drawer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,14 +23,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class Fragment_NavigationDrawer extends Fragment {
 
     /**
      * Remember the position of the selected item.
@@ -60,8 +58,12 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    public static boolean edit = false;
+    private String name;
+    private final String GUEST_USER = "guest";
+    private final String ADMIN_USER = "Admin";
 
-    public NavigationDrawerFragment() {
+    public Fragment_NavigationDrawer() {
     }
 
     @Override
@@ -102,6 +104,24 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
+
+        Intent i = getActivity().getIntent();
+        if(i.getStringExtra("Name") == null){
+            name = GUEST_USER;
+        } else {
+            name = i.getStringExtra("Name");
+        }
+
+        String login;
+
+        System.out.println("Name" + name);
+
+        if(name.equalsIgnoreCase(GUEST_USER)) {
+           login = "Login";
+        } else {
+           login = "Logout";
+        }
+
         ArrayAdapter<String> navAdapter = new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_1,
@@ -110,7 +130,14 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_section1),
                         getString(R.string.title_section2),
                         getString(R.string.title_section3),
-                        "Messaging"
+                        "Messaging",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        login
                 });
 
         mDrawerListView.setAdapter(navAdapter);
@@ -142,10 +169,13 @@ public class NavigationDrawerFragment extends Fragment {
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
+
+
+
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                            /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -155,6 +185,8 @@ public class NavigationDrawerFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+
+
 
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
@@ -243,9 +275,27 @@ public class NavigationDrawerFragment extends Fragment {
         // If the drawer is open, show the global app actions in the action bar. See also
         // showGlobalContextActionBar, which controls the top-left area of the action bar.
         if (mDrawerLayout != null && isDrawerOpen()) {
-            inflater.inflate(R.menu.global, menu);
+            inflater.inflate(R.menu.main, menu);
+
+            MenuItem login_button = menu.findItem(R.id.action_login);
+            MenuItem edit_button = menu.findItem(R.id.action_example);
+
+            if(name.equalsIgnoreCase(ADMIN_USER)){
+                edit_button.setVisible(true);
+            }else {
+                edit_button.setVisible(false);
+            }
+            if(name.equalsIgnoreCase(GUEST_USER)){
+                login_button.setVisible(true);
+            } else {
+                login_button.setVisible(false);
+            }
+
             showGlobalContextActionBar();
         }
+
+
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -256,7 +306,28 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+
+            //Only updates EDIT button if schedule_fragment is visible
+            Fragment_Schedule myFragment = (Fragment_Schedule)getFragmentManager().findFragmentByTag("Schedule");
+            if (myFragment != null && myFragment.isVisible()) {
+                TextView temp = (TextView) getActivity().findViewById(R.id.action_example);
+                Fragment_Schedule frag = (Fragment_Schedule)getFragmentManager().findFragmentById(R.id.schedule_fragment);
+
+                System.out.println("Admin user: " + frag.canEdit());
+
+                if(frag.canEdit()) {
+                    if (edit) {
+                        temp.setBackgroundColor(Color.BLACK);
+                        edit = false;
+                        frag.setEdit(false);
+                    } else {
+                        temp.setBackgroundColor(Color.GREEN);
+                        edit = true;
+                        frag.setEdit(true);
+                    }
+                }
+            }
+
             return true;
         }
 

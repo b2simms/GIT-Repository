@@ -3,7 +3,7 @@ package com.example.bsimmons.navigation_drawer;
 /**
  * Created by bsimmons on 05/06/2015.
  */
-public class Game {
+public class Info_Game {
 
     private String game_id;
     private String team1;
@@ -12,6 +12,29 @@ public class Game {
     private String time;
     private String location;
     private String date;
+    private String team1_score;
+    private String team2_score;
+    private String updated;
+
+    public String getUpdated() {       return updated;    }
+
+    public void setUpdated(String updated) {        this.updated = updated;    }
+
+    public String getTeam2_score() {
+        return team2_score;
+    }
+
+    public void setTeam2_score(String team2_score) {
+        this.team2_score = team2_score;
+    }
+
+    public String getTeam1_score() {
+        return team1_score;
+    }
+
+    public void setTeam1_score(String team1_score) {
+        this.team1_score = team1_score;
+    }
 
     public String getLocation() {        return location;    }
 

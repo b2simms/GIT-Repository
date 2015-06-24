@@ -1,54 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="239dp"
-        android:layout_height="wrap_content"
-        android:text="Name:"
-        android:textColor="#000000"
-        android:id="@+id/text_name"
-        android:layout_gravity="left" />
-
-    <TextView
-        android:layout_width="239dp"
-        android:layout_height="wrap_content"
-        android:text="Subject:"
-        android:textColor="#000000"
-        android:id="@+id/text_subject"
-        android:layout_gravity="left" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:ems="10"
-        android:id="@+id/subject" />
-
-    <TextView
-        android:layout_width="232dp"
-        android:layout_height="wrap_content"
-        android:text="Content:"
-        android:textColor="#000000"
-        android:id="@+id/text_content" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:ems="10"
-        android:id="@+id/content" />
-
-    <Button
-        android:id="@+id/btnPost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/button_blue_gb"
-        style="@style/ButtonText"
-        android:text="Post" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:background="#ffffff">
 
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subject:"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:textColor="#0099FF"
+                android:id="@+id/text_subject"
+                android:layout_gravity="left" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_weight="0"
+                android:ellipsize="end"
+                android:text="50"
+                android:textColor="#0099FF"
+                android:scrollHorizontally="true"
+                android:gravity="right"
+                android:id="@+id/text_count_subject"
+                android:layout_gravity="right" />
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:maxLength="50"
+            android:padding="2dp"
+            android:ems="10"
+            android:id="@+id/subject" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content:"
+                android:textColor="#0099FF"
+                android:id="@+id/text_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:layout_gravity="left"   />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/text_count_content"
+                android:text="200"
+                android:textColor="#0099FF"
+                android:layout_weight="0"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:layout_gravity="right"   />
+        </LinearLayout>
+
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:padding="2dp"
+            android:ems="10"
+            android:maxLength="200"
+            android:id="@+id/content" />
+
+        <Button
+            android:id="@+id/btnPost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/button_blue_gb"
+            style="@style/ButtonText"
+            android:text="Post" />
+
+
+    </LinearLayout>
+</ScrollView>

@@ -1,17 +1,20 @@
 package com.example.bsimmons.navigation_drawer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +33,6 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -38,13 +40,15 @@ import java.util.List;
  * Created by bsimmons on 15/06/2015.
  */
 
-public class New_Message_fragment extends Fragment {
+public class Fragment_New_Message extends Fragment {
 
-    private ArrayList<Game> games;
+    private ArrayList<Info_Game> games;
     private ListView listView;
     private List<String> list;
     private String player_name;
     private String player_team;
+    private final String GUEST_NAME = "guest";
+    private final String GUEST_TEAM = "ALL";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,8 +63,76 @@ public class New_Message_fragment extends Fragment {
         Intent i = getActivity().getIntent();
         player_name = i.getStringExtra("Name");
         player_team = i.getStringExtra("Team");
-        TextView text_name = (TextView) getView().findViewById(R.id.text_name);
-        text_name.setText("Name: " + player_name);
+        if(player_name == null){
+            player_name = GUEST_NAME;
+            player_team = GUEST_TEAM;
+        }
+
+
+
+        final EditText enterSubject = (EditText) getView().findViewById(R.id.subject);
+        //Listening to button event
+        enterSubject.addTextChangedListener(new TextWatcher() {
+
+            String temp = "";
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //This sets a textview to the current length
+                TextView text_count_subject = (TextView) getView().findViewById(R.id.text_count_subject);
+
+                text_count_subject.setText(String.valueOf(50 - enterSubject.getText().length()) + " ");
+
+                if(enterSubject.getText().length()>40){
+                    if(enterSubject.getText().length()<50)  {
+                        enterSubject.setBackgroundColor(Color.LTGRAY);    }
+                    else{
+                        enterSubject.setBackgroundColor(Color.DKGRAY);
+
+                    }
+                }
+                else {
+                    enterSubject.setBackgroundColor(Color.WHITE);
+                }
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        final EditText enterContent = (EditText) getView().findViewById(R.id.content);
+        //Listening to button event
+        enterContent.addTextChangedListener(new TextWatcher() {
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //This sets a textview to the current length
+                TextView text_count_content = (TextView) getView().findViewById(R.id.text_count_content);
+
+                text_count_content.setText(String.valueOf(200 - enterContent.getText().length()) + " ");
+
+                if(enterContent.getText().length()>175){
+                    if(enterContent.getText().length()<200)  {
+                        enterContent.setBackgroundColor(Color.LTGRAY);    }
+                    else{
+                        enterContent.setBackgroundColor(Color.DKGRAY);
+
+                    }
+                }
+                else {
+                    enterContent.setBackgroundColor(Color.WHITE);
+                }
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
 
         Button newMessage = (Button) getView().findViewById(R.id.btnPost);
@@ -86,8 +158,6 @@ public class New_Message_fragment extends Fragment {
                     nameValuePairs.add(subject.getText().toString());
                     nameValuePairs.add(content.getText().toString());
 
-                    GregorianCalendar gCalend = new GregorianCalendar();
-
                     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
 
                     String[] splitTime = currentDateTimeString.split("\\s+");
@@ -95,17 +165,27 @@ public class New_Message_fragment extends Fragment {
 
                     String date = splitTime[0] + "-" + splitDate[0];
 
-                    System.out.println("Date:" + date);
+                    System.out.println("Date:" + currentDateTimeString);
 
-                    nameValuePairs.add(date);
+                    nameValuePairs.add(currentDateTimeString);
 
                     list = nameValuePairs;
 
                     System.out.println(nameValuePairs.get(0));
 
-                    //new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
+                    if(isConnected()) {
+                        new HttpAsyncTask().execute("http://bsimms2.byethost5.com/index.php/messages");
+                    } else {
+                        Toast.makeText(getActivity(), "No Network Connection", Toast.LENGTH_LONG).show();
+                    }
 
-                    new HttpAsyncTask().execute("http://bsimms2.byethost5.com/index.php/messages");
+
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                    fm.beginTransaction()
+                            .replace(R.id.container, new Fragment_Messaging(), "Messaging")
+                            .commit();
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -166,7 +246,7 @@ public class New_Message_fragment extends Fragment {
                 result = "Did not work!";
 
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+            e.printStackTrace();
         }
 
         // 11. return result
@@ -182,20 +262,7 @@ public class New_Message_fragment extends Fragment {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            try {
-                Toast.makeText(getActivity(), "Sent!", Toast.LENGTH_LONG).show();
-
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-
-                fm.beginTransaction()
-                        .replace(R.id.container, new Messaging_fragment())
-                        .commit();
-            }catch(Exception e) {
-                e.printStackTrace();
-            }
-
-
-
+            //nothing...
         }
     }
 
