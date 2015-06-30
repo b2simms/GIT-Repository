@@ -3,7 +3,7 @@ package com.example.bsimmons.navigation_drawer;
 /**
  * Created by bsimmons on 12/06/2015.
  */
-public class Info_Message {
+public class MessageInfo {
     String team;
     String name;
     String sub;

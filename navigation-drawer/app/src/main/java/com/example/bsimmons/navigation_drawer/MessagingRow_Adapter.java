@@ -5,7 +5,6 @@ package com.example.bsimmons.navigation_drawer;
  */
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,26 +12,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by bsimmons on 09/06/2015.
  */
 
-public class Adapter_Messaging extends ArrayAdapter<String> {
+public class MessagingRow_Adapter extends ArrayAdapter<String> {
     private final Context context;
-    private ArrayList<Info_Message> info;
-    private String date_last_viewed;
+    private ArrayList<MessageInfo> info;
 
-    public Adapter_Messaging(Context context, ArrayList<Info_Message> info, String[] values, String date_last_viewed) {
+    public MessagingRow_Adapter(Context context, ArrayList<MessageInfo> info, String[] values) {
         super(context, R.layout.adapter_messagingrow, values);
         this.context = context;
         this.info = info;
-        this.date_last_viewed = date_last_viewed;
     }
 
     @Override
@@ -49,37 +42,10 @@ public class Adapter_Messaging extends ArrayAdapter<String> {
 
         name.setText(" " + info.get(position).getName());
         team_image = setTeamIcon(info.get(position).getTeam(), team_image);
-        sub.setText("Subject: " + info.get(position).getSub());
-        content.setText("\n  " + info.get(position).getContent() + "\n");
+        sub.setText(" " + info.get(position).getSub());
+        content.setText(" " + info.get(position).getContent());
+        date.setText(" " + info.get(position).getDate());
 
-        String[] splitTime = info.get(position).getDate().split("\\s+");
-        String[] splitDate = splitTime[1].split(",");
-
-        String displayDate = splitTime[0] + "-" + splitDate[0];
-
-        date.setText(displayDate);
-
-
-        try {
-            //parse String to Date
-            DateFormat format = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a", Locale.ENGLISH);
-            Date parseToDateMessageCreated = format.parse(info.get(position).getDate());
-            Date parseToLastViewed = format.parse(date_last_viewed);
-
-            System.out.println("created:" + parseToDateMessageCreated + "=" + parseToLastViewed);
-
-            //change background if user has not read message yet
-            if(parseToDateMessageCreated.after(parseToLastViewed)){
-
-                System.out.println("****************"+ parseToDateMessageCreated + " is GREATER THAN " + parseToLastViewed);
-
-                rowView.setBackgroundColor(Color.CYAN);
-            }
-
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
         return rowView;
     }
 

@@ -4,21 +4,16 @@ package com.example.bsimmons.navigation_drawer;
  * Created by bsimmons on 08/06/2015.
  */
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -56,8 +51,6 @@ public class LoginScreen extends Activity {
     private String playerName;
     private String playerPass;
     private String playerTeam;
-    private String date;
-    private String player_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +62,12 @@ public class LoginScreen extends Activity {
 
         Button btnNextScreen = (Button) findViewById(R.id.btnNext);
 
+        //new HttpAsyncTask().execute("http://bsimms2.byethost5.com/index_1?sql=" + str + ".php");
+
+        //new HttpAsyncTask().execute("http://bsimms2.byethost5.com/index_1.php?sql=SELECT%20player_name,password%20FROM%20Player%20WHERE%20player_name%20LIKE%27%bob%%27");
+
+
+
         //Listening to button event
         btnNextScreen.setOnClickListener(new View.OnClickListener() {
 
@@ -76,12 +75,13 @@ public class LoginScreen extends Activity {
 
                 try {
 
-                    if(isConnected()){
-                        //retrieve username and password from database
-                        new HttpAsyncTask().execute("http://bsimms2.byethost5.com/index.php/login/" + inputName.getText().toString());
-                    }else{
-                        Toast.makeText(getBaseContext(), "No Netwok Connection", Toast.LENGTH_LONG).show();
-                    }
+                    System.out.println("Inputname:" + inputName.getText().toString());
+
+                    //retrieve username and password from database
+                    new HttpAsyncTask().execute("http://bsimms2.byethost5.com/index.php/login/" + inputName.getText().toString());
+
+                    System.out.println("Playername:" + playerName + " playerPass: " + playerPass);
+
 
                 }catch(Exception e){
                     System.out.println(e.getMessage());
@@ -94,6 +94,7 @@ public class LoginScreen extends Activity {
     }
 
     private void checkLogin(String name, String pass){
+        System.out.println("checkname:" + name + " checkPass: " + pass);
 
         //check username and password against database
         if (name.equalsIgnoreCase(inputName.getText().toString()) && pass.equals(inputPass.getText().toString())) {
@@ -104,10 +105,8 @@ public class LoginScreen extends Activity {
             nextScreen.putExtra("Name", inputName.getText().toString());
             nextScreen.putExtra("Password", inputPass.getText().toString());
             nextScreen.putExtra("Team",playerTeam);
-            nextScreen.putExtra("Date",date);
-            nextScreen.putExtra("Player_id", player_id);
 
-            finish();
+            Log.e("Passing to MainActivity", inputName.getText() + "." + inputPass.getText());
 
             startActivity(nextScreen);
         } else {
@@ -171,8 +170,6 @@ public class LoginScreen extends Activity {
             return false;
     }
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-
-
         @Override
         protected String doInBackground(String... urls) {
 
@@ -183,9 +180,8 @@ public class LoginScreen extends Activity {
         @Override
         protected void onPostExecute(String result) {
 
-
+            Toast.makeText(getBaseContext(), "Updated!", Toast.LENGTH_LONG).show();
             try {
-
                 JSONObject json = new JSONObject(result);
 
                 //get json array
@@ -195,10 +191,7 @@ public class LoginScreen extends Activity {
                 playerName = json.optString("player_name");
                 playerPass = json.optString("password");
                 playerTeam = json.optString("team");
-                date = json.optString("message_last_view_date");
-                player_id = json.optString("player_id");
-                checkLogin(playerName, playerPass);
-
+                checkLogin(playerName,playerPass);
 
             }
             catch(Exception e){
@@ -206,18 +199,6 @@ public class LoginScreen extends Activity {
                 showError(1);
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
-                .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                }).setNegativeButton("No", null).show();
     }
 
 

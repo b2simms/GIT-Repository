@@ -4,17 +4,22 @@ package com.example.bsimmons.navigation_drawer;
  * Created by bsimmons on 11/06/2015.
  */
 
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -28,11 +33,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
-public class Fragment_Standings extends Fragment {
+public class Standings_fragment extends Fragment {
 
-    private ArrayList<Info_Team> standings;
+    private ArrayList<TeamInfo> standings;
     private ListView listView ;
     private String team_selected;
 
@@ -45,12 +53,7 @@ public class Fragment_Standings extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if(isConnected()) {
-            new StandingsAsyncTask().execute("http://bsimms2.byethost5.com/index.php/standings");
-        } else {
-            Toast.makeText(getActivity(), "No Network Connection", Toast.LENGTH_LONG).show();
-        }
-
+        new StandingsAsyncTask().execute("http://bsimms2.byethost5.com/index.php/standings");
     }
 
     public static String GET(String url){
@@ -74,7 +77,7 @@ public class Fragment_Standings extends Fragment {
                 result = "Did not work!";
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d("InputStream", e.getLocalizedMessage());
         }
 
         return result;
@@ -121,34 +124,22 @@ public class Fragment_Standings extends Fragment {
     }
 
     private class StandingsAsyncTask extends AsyncTask<String, Void, String> {
-
-        ProgressDialog dialog;
-
         @Override
         protected String doInBackground(String... urls) {
 
             return GET(urls[0]);
         }
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(getActivity(),R.style.MyTheme);
-            dialog.setCancelable(false);
-            dialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-            dialog.show();
-        }
-
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
 
 
             try {
-
+                Toast.makeText(getActivity(), "Updated!", Toast.LENGTH_LONG).show();
 
                 JSONObject json = new JSONObject(result);
 
-                standings = new ArrayList<Info_Team>();
+                standings = new ArrayList<TeamInfo>();
 
                 //get json array
                 JSONArray jsonarray = json.getJSONArray("games");
@@ -156,7 +147,7 @@ public class Fragment_Standings extends Fragment {
                 for (int i = 0; i < jsonarray.length(); i++) {
                     json = jsonarray.getJSONObject(i);
 
-                    Info_Team info = new Info_Team();
+                    TeamInfo info = new TeamInfo();
 
 
                     info.setTeam(json.optString("team"));
@@ -189,7 +180,7 @@ public class Fragment_Standings extends Fragment {
                 // Third parameter - ID of the TextView to which the data is written
                 // Fourth - the Array of data
 
-                Adapter_Standings adapter = new Adapter_Standings(getActivity(),standings,values);
+                StandingsRow_Adapter adapter = new StandingsRow_Adapter(getActivity(),standings,values);
 
                 // Assign adapter to ListView
                 listView.setAdapter(adapter);
@@ -209,10 +200,10 @@ public class Fragment_Standings extends Fragment {
                     }
                 });
 
-                dialog.dismiss();
-
+                ///SPINNER END
 
             } catch(Exception e) {
+                Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
 

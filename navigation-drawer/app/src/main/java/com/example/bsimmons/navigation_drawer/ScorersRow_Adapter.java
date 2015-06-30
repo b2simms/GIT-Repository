@@ -1,8 +1,9 @@
 package com.example.bsimmons.navigation_drawer;
 
 /**
- * Created by bsimmons on 09/06/2015.
+ * Created by bsimmons on 12/06/2015.
  */
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Adapter_Standings extends ArrayAdapter<String> {
-    private final Context context;
-    private ArrayList<Info_Team> info;
+/**
+ * Created by bsimmons on 09/06/2015.
+ */
 
-    public Adapter_Standings(Context context, ArrayList<Info_Team> info, String[] values) {
-        super(context, R.layout.adapter_standings, values);
+public class ScorersRow_Adapter extends ArrayAdapter<String> {
+    private final Context context;
+    private ArrayList<ScoreInfo> info;
+
+    public ScorersRow_Adapter(Context context, ArrayList<ScoreInfo> info, String[] values) {
+        super(context, R.layout.adapter_scorersrow, values);
         this.context = context;
         this.info = info;
     }
@@ -27,22 +32,19 @@ public class Adapter_Standings extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.adapter_standings, parent, false);
-        TextView team = (TextView) rowView.findViewById(R.id.name_text);
+        View rowView = inflater.inflate(R.layout.adapter_scorersrow, parent, false);
+        TextView name = (TextView) rowView.findViewById(R.id.name_text);
         ImageView team_image = (ImageView) rowView.findViewById(R.id.team_image);
-        //TextView loss = (TextView) rowView.findViewById(R.id.loss_text);
-        TextView win = (TextView) rowView.findViewById(R.id.team_text);
-        TextView points = (TextView) rowView.findViewById(R.id.points_text);
+        TextView team = (TextView) rowView.findViewById(R.id.team_text);
+        TextView goals = (TextView) rowView.findViewById(R.id.goals_text);
 
 
-        team.setText(" " + info.get(position).getTeam());
-        win.setText(" Win: " + info.get(position).getWin()+ "      Tie: " + info.get(position).getTie() + "      Loss: " + info.get(position).getLoss());
+        name.setText(" " + info.get(position).getFirst_name() + " " +
+                            info.get(position).getLast_name());
+        team.setText(" Team: " + info.get(position).getTeam());
         team_image = setTeamIcon(info.get(position).getTeam(), team_image);
-
-        //loss.setText(" Loss: " + info.get(position).getLoss());
-        points.setTextSize(30);
-        points.setText(info.get(position).getPoints() + " ");
-
+        goals.setTextSize(30);
+        goals.setText(info.get(position).getGoals() + " ");
 
         return rowView;
     }
